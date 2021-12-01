@@ -10,11 +10,15 @@ def main() -> None:
         for line in f.readlines():
             num: int = int(line.strip())
             print(f"{num} ", end="")
+
             if num > pre_num:
                 increase_count += 1
                 print("(increased)")
-            else:
+            elif num < pre_num:
                 print("(decreased)")
+            else:
+                print("(no change)")
+
             pre_num = num
 
         print(increase_count)
