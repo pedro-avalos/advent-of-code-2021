@@ -43,7 +43,7 @@ def get_window_sums(nums: list[int], win_size: int = 3) -> list[int]:
         list[int]: Sum of each window.
     """
 
-    return [sum(nums[i : i + win_size]) for i in range(len(nums) - 2)]
+    return [sum(nums[i : i + win_size]) for i in range(len(nums) - (win_size - 1))]
 
 
 def main() -> None:
