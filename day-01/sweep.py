@@ -1,27 +1,46 @@
 #!/usr/bin/env python3
 
 
+def to_nums(name: str) -> list[int]:
+    """
+    Convert the input numbers from the file with the given name into a list of
+    measurements.
+
+    Params:
+        name (str): Name of the input file.
+
+    Returns:
+        list[int]: List of measuremnts.
+    """
+
+    with open(name) as f:
+        return [int(s.strip()) for s in f.readlines()]
+
+
+def part_1(nums: list[int]) -> int:
+    """
+    Count the number of times the measurement increased from the previous
+    measurement.
+
+    Params:
+        nums (list[int]): List of measurements
+
+    Returns:
+        int: Number of increments.
+    """
+
+    return sum([
+        num > pre for i, (num, pre) in enumerate(zip(nums[1:], nums[:-1]))
+    ])
+
+
 def main() -> None:
-    with open("input.txt") as f:
-        increase_count: int = 0
-        pre_num: int = int(f.readline().strip())
-        print(f"{pre_num} (N/A - no previous measurement)")
+    """
+    Main entrypoint of the program.
+    """
 
-        for line in f.readlines():
-            num: int = int(line.strip())
-            print(f"{num} ", end="")
-
-            if num > pre_num:
-                increase_count += 1
-                print("(increased)")
-            elif num < pre_num:
-                print("(decreased)")
-            else:
-                print("(no change)")
-
-            pre_num = num
-
-        print(increase_count)
+    nums: list[int] = to_nums("input.txt")
+    print(f"Part 1: {part_1(nums)}")
 
 
 if __name__ == "__main__":
