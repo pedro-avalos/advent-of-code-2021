@@ -17,13 +17,12 @@ def to_nums(name: str) -> list[int]:
         return [int(s.strip()) for s in f.readlines()]
 
 
-def part_1(nums: list[int]) -> int:
+def count_increments(nums: list[int]) -> int:
     """
-    Count the number of times the measurement increased from the previous
-    measurement.
+    Count the number of times a number is larger from the previous number.
 
     Params:
-        nums (list[int]): List of measurements
+        nums (list[int]): List of numbers.
 
     Returns:
         int: Number of increments.
@@ -32,20 +31,19 @@ def part_1(nums: list[int]) -> int:
     return sum([num > pre for num, pre in zip(nums[1:], nums[:-1])])
 
 
-def part_2(nums: list[int], win_size: int = 3) -> int:
+def get_window_sums(nums: list[int], win_size: int = 3) -> list[int]:
     """
-    Count the number of times the sum of a window increased from the previous
-    sum of a window.
+    Convert the given measurements to the list of window sums.
 
     Params:
         nums (list[int]): List of measurements.
         win_size (int): Size of each window.
 
     Returns:
-        int: Number of increments.
+        list[int]: Sum of each window.
     """
 
-    return 0
+    return [sum(nums[i:i+3]) for i in range(len(nums) - 2)]
 
 
 def main() -> None:
@@ -54,8 +52,8 @@ def main() -> None:
     """
 
     nums: list[int] = to_nums("input.txt")
-    print(f"Part 1: {part_1(nums)}")
-    print(f"Part 2: {part_2(nums)}")
+    print(f"Part 1: {count_increments(nums)}")
+    print(f"Part 2: {count_increments(get_window_sums(nums))}")
 
 
 if __name__ == "__main__":
