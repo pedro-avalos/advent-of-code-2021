@@ -29,9 +29,23 @@ def part_1(nums: list[int]) -> int:
         int: Number of increments.
     """
 
-    return sum([
-        num > pre for i, (num, pre) in enumerate(zip(nums[1:], nums[:-1]))
-    ])
+    return sum([num > pre for num, pre in zip(nums[1:], nums[:-1])])
+
+
+def part_2(nums: list[int], win_size: int = 3) -> int:
+    """
+    Count the number of times the sum of a window increased from the previous
+    sum of a window.
+
+    Params:
+        nums (list[int]): List of measurements.
+        win_size (int): Size of each window.
+
+    Returns:
+        int: Number of increments.
+    """
+
+    return 0
 
 
 def main() -> None:
@@ -41,6 +55,7 @@ def main() -> None:
 
     nums: list[int] = to_nums("input.txt")
     print(f"Part 1: {part_1(nums)}")
+    print(f"Part 2: {part_2(nums)}")
 
 
 if __name__ == "__main__":
