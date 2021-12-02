@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+import sys
+
+
 def to_nums(name: str) -> list[int]:
     """
     Convert the input numbers from the file with the given name into a list of
@@ -51,9 +54,16 @@ def main() -> None:
     Main entrypoint of the program.
     """
 
-    nums: list[int] = to_nums("input.txt")
-    print(f"Part 1: {count_increments(nums)}")
-    print(f"Part 2: {count_increments(get_window_sums(nums))}")
+    name: str = "input.txt" if len(sys.argv) < 2 else sys.argv[1]
+    nums: list[int] = []
+    try:
+        nums = to_nums(name)
+    except:
+        print(f"Invalid file name {name}")
+        exit(1)
+    else:
+        print(f"Part 1: {count_increments(nums)}")
+        print(f"Part 2: {count_increments(get_window_sums(nums))}")
 
 
 if __name__ == "__main__":
