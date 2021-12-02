@@ -16,8 +16,15 @@ def to_nums(name: str) -> list[int]:
         list[int]: List of measuremnts.
     """
 
-    with open(name) as f:
-        return [int(s.strip()) for s in f.readlines()]
+    try:
+        with open(name) as f:
+            return [int(s.strip()) for s in f.readlines()]
+    except FileNotFoundError:
+        print(f"Invalid file name '{name}', file not found")
+        exit(1)
+    except ValueError:
+        print("Invalid contents, input contains non-integer values")
+        exit(1)
 
 
 def count_increments(nums: list[int]) -> int:
@@ -55,15 +62,17 @@ def main() -> None:
     """
 
     name: str = "input.txt" if len(sys.argv) < 2 else sys.argv[1]
-    nums: list[int] = []
+    nums: list[int] = to_nums(name)
+
+    win_size: int = 3
     try:
-        nums = to_nums(name)
-    except:
-        print(f"Invalid file name {name}")
+        win_size: int = 3 if len(sys.argv) < 3 else int(sys.argv[2])
+    except ValueError:
+        print(f"Invalid argument '{sys.argv[2]}' for window sizes, non-integer")
         exit(1)
-    else:
-        print(f"Part 1: {count_increments(nums)}")
-        print(f"Part 2: {count_increments(get_window_sums(nums))}")
+
+    print(f"Part 1: {count_increments(nums)}")
+    print(f"Part 2: {count_increments(get_window_sums(nums, win_size))}")
 
 
 if __name__ == "__main__":
