@@ -9,7 +9,8 @@ struct sub_data {
   int horizontal;
 };
 
-// Must be freed.
+// Initialize a sub_data struct. The returned struct is created with calloc()
+// and must be freed appropriately after use.
 struct sub_data *new_sub_data() {
   struct sub_data *out = calloc(1, sizeof(*out));
   out->depth = 0;
@@ -17,19 +18,18 @@ struct sub_data *new_sub_data() {
   return out;
 }
 
+// Do the final multiplication of the challenge.
 int multiply_positions(struct sub_data *data) {
   return data->horizontal * data->depth;
 }
 
 int main(int argc, char *argv[]) {
-  char *name;
-  FILE *file;
-  char buffer[BUFFER_LENGTH];
+  char *name; // File name of input
+  FILE *file; // File stream of all input data
 
   name = "input.txt";
-  if (argc > 1) {
+  if (argc > 1)
     name = argv[1];
-  }
 
   file = fopen(name, "r");
   if (file == NULL) {
@@ -38,15 +38,20 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  int aim = 0;
   struct sub_data *part_1 = new_sub_data();
   struct sub_data *part_2 = new_sub_data();
 
-  int *amount = calloc(1, sizeof(*amount));
-  char *direction = calloc(8, sizeof(*direction));
+  int aim = 0;
+  char *direction = calloc(8, sizeof(*direction)); // Direciton in input line
+  int *amount = calloc(1, sizeof(*amount));        // Amount in input line
 
-  while (fgets(buffer, BUFFER_LENGTH, file)) {
-    sscanf(buffer, "%s %i", direction, amount);
+  // Current line being read
+  char *line = calloc(BUFFER_LENGTH, sizeof(*line));
+  while (fgets(line, BUFFER_LENGTH, file)) {
+
+    // Parse the current line into direction and amount
+    sscanf(line, "%s %i", direction, amount);
+
     if (strcmp(direction, "forward") == 0) {
       part_1->horizontal += *amount;
       part_2->horizontal += *amount;
@@ -60,12 +65,13 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  free(line);
   free(amount);
   free(direction);
   fclose(file);
 
-  printf("part_1: %i\n",  multiply_positions(part_1));
-  printf("part_2: %i\n",  multiply_positions(part_2));
+  printf("Part 1: %i\n", multiply_positions(part_1));
+  printf("Part 2: %i\n", multiply_positions(part_2));
 
   free(part_1);
   free(part_2);
