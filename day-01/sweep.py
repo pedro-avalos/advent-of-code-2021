@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
 
 
+"""
+Day 1 script.
+
+Usage:
+
+    ./sweep.py [N] [S]
+
+    - [optional] N (str): File name of the input - default 'input.txt'
+    - [optional] S (int): Window size for part 2 - default 3
+"""
+
+
 import sys
 
 
@@ -65,11 +77,12 @@ def main() -> None:
     nums: list[int] = to_nums(name)
 
     win_size: int = 3
-    try:
-        win_size: int = 3 if len(sys.argv) < 3 else int(sys.argv[2])
-    except ValueError:
-        print(f"Invalid argument '{sys.argv[2]}' for window sizes, non-integer")
-        exit(1)
+    if len(sys.argv) >= 3:
+        try:
+            win_size: int = int(sys.argv[2])
+        except ValueError:
+            print(f"Invalid argument '{sys.argv[2]}' for window sizes, non-integer")
+            exit(1)
 
     print(f"Part 1: {count_increments(nums)}")
     print(f"Part 2: {count_increments(get_window_sums(nums, win_size))}")
