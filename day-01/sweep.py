@@ -79,7 +79,7 @@ def main() -> None:
     win_size: int = 3
     if len(sys.argv) >= 3:
         try:
-            win_size: int = int(sys.argv[2])
+            win_size = int(sys.argv[2])
         except ValueError:
             print(f"Invalid argument '{sys.argv[2]}' for window sizes, non-integer")
             exit(1)
