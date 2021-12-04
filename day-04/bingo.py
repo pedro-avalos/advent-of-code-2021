@@ -24,14 +24,12 @@ def get_input(file_name: str) -> tuple[list[int], list[np.ndarray]]:
         file_name (str): Name of the file with the input data.
 
     Returns:
-        tuple[list[int], list[np.ndarray]]:
+        tuple[list[int], list[np.ndarray]]: Order and boards respectively.
     """
 
     with open(file_name) as f:
         order = list(map(int, f.readline().strip().split(",")))
-        nums: list[int] = list(
-            map(int, f.read().replace("\n", " ").strip().split())
-        )
+        nums: list[int] = list(map(int, f.read().replace("\n", " ").strip().split()))
         tmp: list[list[int]] = [nums[i : i + 5] for i in range(0, len(nums), 5)]
         boards = [np.array(tmp[i : i + 5]) for i in range(0, len(tmp), 5)]
     return order, boards
@@ -86,7 +84,7 @@ def main() -> None:
     try:
         order, boards = get_input(file_name)
     except FileNotFoundError:
-        print("")
+        print("File '{file_name}' not found")
         exit(1)
 
     win_status = [False] * len(boards)
