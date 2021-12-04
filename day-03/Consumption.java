@@ -1,36 +1,78 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Consumption.
- * 
+ *
  * @author Pedro Avalos
  */
 public class Consumption {
 
-  public static void main(String[] args) {
-    String name = args.length > 0 ? args[0] : "input.txt";
-    File file = new File(name);
-    Scanner scanner = null;
+  /**
+   * Input data split into numbers represented as text.
+   */
+  private List<String> report;
 
+  /**
+   * Length of each number in the input.
+   */
+  private int numberLength;
+
+  /**
+   * Text representaion of the gamma rate, in binary.
+   */
+  private String gamma;
+
+  /**
+   * Text representaion of the epsilon rate, in binary.
+   */
+  private String epsilon;
+
+  /**
+   * Text representaion of the generator rating, in binary.
+   */
+  private String generator;
+
+  /**
+   * Text representaion of the scrubber rating, in binary.
+   */
+  private String scrubber;
+
+  /**
+   * Constructor.
+   * 
+   * @param fileName Name of the input file.
+   */
+  public Consumption(String fileName) {
+    File file = new File(fileName);
+    Scanner scanner = null;
     try {
       scanner = new Scanner(file);
     } catch (FileNotFoundException e) {
-      System.out.println("File '" + name + "' not found.");
+      System.out.println("File '" + fileName + "' not found.");
       System.exit(1);
     }
 
-    ArrayList<String> report = new ArrayList<>();
+    report = new ArrayList<>();
     while (scanner.hasNextLine())
       report.add(scanner.nextLine().strip());
     scanner.close();
 
-    int length = report.get(0).length();
-    String gammaBits = "";
-    String epsilonBits = "";
-    for (int i = 0; i < length; i++) {
+    numberLength = report.get(0).length();
+    gamma = new String();
+    epsilon = new String();
+    generator = new String();
+    scrubber = new String();
+  }
+
+  /**
+   * Calculate the gamma and epsilon rates. This is part 1 of the challenge.
+   */
+  public void calculateRates() {
+    for (int i = 0; i < numberLength; i++) {
       int countOnes = 0;
 
       for (String num : report)
@@ -41,42 +83,91 @@ public class Consumption {
           System.exit(1);
         }
 
-      gammaBits += (2 * countOnes >= report.size()) ? "1" : "0";
-      epsilonBits += (2 * countOnes < report.size()) ? "1" : "0";
+      gamma += (2 * countOnes >= report.size()) ? "1" : "0";
+      epsilon += (2 * countOnes < report.size()) ? "1" : "0";
     }
+  }
 
-    long gamma = Integer.parseInt(gammaBits, 2);
-    long epsilon = Integer.parseInt(epsilonBits, 2);
-
-    System.out.println("Part 1: " + (gamma * epsilon));
-
+  /**
+   * Calculate the generator and scrubber ratings. This is part 2 of the
+   * challenge.
+   */
+  public void calculateRatings() {
     ArrayList<String> generatorCandidates = new ArrayList<>(report);
+    ArrayList<String> scrubberCandidates = new ArrayList<>(report);
+
     for (int charPos = 0; generatorCandidates.size() > 1; charPos++) {
       int countOnes = 0;
       for (String s : generatorCandidates)
         countOnes += Integer.parseInt("" + s.charAt(charPos));
       char majority = (2 * countOnes >= generatorCandidates.size()) ? '1' : '0';
 
-      for (int j = 0; j < generatorCandidates.size(); j++)
-        if (generatorCandidates.get(j).charAt(charPos) != majority)
-          generatorCandidates.remove(j--);
+      for (int i = 0; i < generatorCandidates.size(); i++)
+        if (generatorCandidates.get(i).charAt(charPos) != majority)
+          generatorCandidates.remove(i--);
     }
 
-    ArrayList<String> scrubberCandidates = new ArrayList<>(report);
     for (int charPos = 0; scrubberCandidates.size() > 1; charPos++) {
       int countOnes = 0;
       for (String s : scrubberCandidates)
         countOnes += Integer.parseInt("" + s.charAt(charPos));
       char minority = (2 * countOnes < scrubberCandidates.size()) ? '1' : '0';
 
-      for (int j = 0; j < scrubberCandidates.size(); j++)
-        if (scrubberCandidates.get(j).charAt(charPos) != minority)
-          scrubberCandidates.remove(j--);
+      for (int i = 0; i < scrubberCandidates.size(); i++)
+        if (scrubberCandidates.get(i).charAt(charPos) != minority)
+          scrubberCandidates.remove(i--);
     }
 
-    long generator = Integer.parseInt(generatorCandidates.get(0), 2);
-    long scrubber = Integer.parseInt(scrubberCandidates.get(0), 2);
+    generator = generatorCandidates.get(0);
+    scrubber = scrubberCandidates.get(0);
+  }
 
-    System.out.println("Part 2: " + (generator * scrubber));
+  /**
+   * Retrieve the gamma rate as a number.
+   * 
+   * @return Gamma rate.
+   */
+  public long getGamma() {
+    return Integer.parseInt(gamma, 2);
+  }
+
+  /**
+   * Retrieve the epsilon rate as a number.
+   * 
+   * @return Epsilon rate.
+   */
+  public long getEpsilon() {
+    return Integer.parseInt(epsilon, 2);
+  }
+
+  /**
+   * Retrieve the oxygen generator rating as a number.
+   * 
+   * @return Oxygen generator rating.
+   */
+  public long getGenerator() {
+    return Integer.parseInt(generator, 2);
+  }
+
+  /**
+   * Retrieve the CO2 scrubber rating as a number.
+   * 
+   * @return CO2 scrubber rating.
+   */
+  public long getScrubber() {
+    return Integer.parseInt(scrubber, 2);
+  }
+
+  public static void main(String[] args) {
+    Consumption consumption = new Consumption(
+        args.length > 0 ? args[0] : "input.txt");
+
+    consumption.calculateRates();
+    consumption.calculateRatings();
+
+    System.out.println(
+        "Part 1: " + (consumption.getGamma() * consumption.getEpsilon()));
+    System.out.println(
+        "Part 2: " + (consumption.getGenerator() * consumption.getScrubber()));
   }
 }
