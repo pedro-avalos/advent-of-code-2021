@@ -50,10 +50,16 @@ def main() -> None:
         print("")
         exit(1)
 
+    done: bool = False
     win_status = [False] * len(boards)
-    win_num: int = 0
+    win_num: int = -1
+    last_num: int = -1
     first_win: np.ndarray = np.ndarray([])
+    last_win: np.ndarray = np.ndarray([])
     for num in order:
+        if all(win_status):
+            break
+
         for board_num, board in enumerate(boards):
             if win_status[board_num]:
                 continue
@@ -69,8 +75,12 @@ def main() -> None:
                     first_win = board
 
                 win_status[board_num] = True
+                if all(win_status):
+                    last_win = board
+                    last_num = num
 
-    print(sum_board(first_win) * win_num)
+    print(f"Part 1: {sum_board(first_win) * win_num}")
+    print(f"Part 2: {sum_board(last_win) * last_num}")
 
 
 if __name__ == "__main__":
