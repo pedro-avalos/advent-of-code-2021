@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Bingo.
+Day 4 script.
 
 Examples:
 
@@ -16,7 +16,38 @@ import sys
 import numpy as np
 
 
+def get_input(file_name: str) -> tuple[list[int], list[np.ndarray]]:
+    """
+    Retrive the numbers called and the boards.
+
+    Args:
+        file_name (str): Name of the file with the input data.
+
+    Returns:
+        tuple[list[int], list[np.ndarray]]:
+    """
+
+    with open(file_name) as f:
+        order = list(map(int, f.readline().strip().split(",")))
+        nums: list[int] = list(
+            map(int, f.read().replace("\n", " ").strip().split())
+        )
+        tmp: list[list[int]] = [nums[i : i + 5] for i in range(0, len(nums), 5)]
+        boards = [np.array(tmp[i : i + 5]) for i in range(0, len(tmp), 5)]
+    return order, boards
+
+
 def has_won(board: np.ndarray) -> bool:
+    """
+    Check if the given board has won.
+
+    Args:
+        board (np.ndarray): Board to be checked.
+
+    Returns:
+        bool: True if the board has a row or column of all marked numbers.
+    """
+
     trans: np.ndarray = board.transpose()
     for i in range(len(board)):
         if sum(board[i]) == -5 or sum(trans[i]) == -5:
@@ -24,33 +55,40 @@ def has_won(board: np.ndarray) -> bool:
     return False
 
 
-def sum_board(board: np.ndarray) -> int:
-    out: int = 0
+def score(board: np.ndarray, num: int) -> int:
+    """
+    Score the given board.
+
+    Args:
+        board (np.ndarray): Board to be scored.
+        num (int): Number called when this board won.
+
+    Returns:
+        int: Score of the board.
+    """
+
+    board_sum: int = 0
     for row in board:
         for val in row:
-            if val != -1:
-                out += val
-    return out
+            board_sum += val if val != -1 else 0
+    return board_sum * num
 
 
 def main() -> None:
+    """
+    Find the first and last boards to win and score them.
+    """
+
     file_name: str = "input.txt" if len(sys.argv) < 2 else sys.argv[1]
     order: list[int] = []
     boards: list[np.ndarray] = []
 
     try:
-        with open(file_name) as f:
-            order = list(map(int, f.readline().strip().split(",")))
-            nums: list[int] = list(
-                map(int, f.read().replace("\n", " ").strip().split())
-            )
-            tmp: list[list[int]] = [nums[i : i + 5] for i in range(0, len(nums), 5)]
-            boards = [np.array(tmp[i : i + 5]) for i in range(0, len(tmp), 5)]
+        order, boards = get_input(file_name)
     except FileNotFoundError:
         print("")
         exit(1)
 
-    done: bool = False
     win_status = [False] * len(boards)
     win_num: int = -1
     last_num: int = -1
@@ -79,8 +117,8 @@ def main() -> None:
                     last_win = board
                     last_num = num
 
-    print(f"Part 1: {sum_board(first_win) * win_num}")
-    print(f"Part 2: {sum_board(last_win) * last_num}")
+    print(f"Part 1: {score(first_win, win_num)}")
+    print(f"Part 2: {score(last_win, last_num)}")
 
 
 if __name__ == "__main__":
