@@ -95,7 +95,7 @@ def score(board: np.ndarray, num: int) -> int:
 
 def main() -> None:
     """
-    Find the first and last boards to win and score them.
+    Find the first and last boards to win, then score them.
     """
 
     file_name: str = "input.txt" if len(sys.argv) < 2 else sys.argv[1]
