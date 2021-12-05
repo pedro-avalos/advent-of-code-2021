@@ -105,7 +105,7 @@ def main() -> None:
     try:
         order, boards = get_input(file_name)
     except FileNotFoundError:
-        print("File '{file_name}' not found")
+        print(f"File '{file_name}' not found")
         exit(1)
 
     win_status: list[bool] = [False] * len(boards)
