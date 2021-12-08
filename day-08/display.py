@@ -8,6 +8,13 @@ Day 8 script.
 import sys
 
 
+def part_1(patterns: list[tuple[list[str], list[str]]]) -> int:
+    count: int = 0
+    for (_, right) in patterns:
+        count += sum([len(i) in [2, 4, 3, 7] for i in right])
+    return count
+
+
 def main() -> None:
     name: str = "input.txt" if len(sys.argv) < 2 else sys.argv[1]
     patterns: list[tuple[list[str], list[str]]] = []
@@ -21,11 +28,7 @@ def main() -> None:
         print(f"File '{name}' not found.")
         exit(1)
 
-    count: int = 0
-    for (left, right) in patterns:
-        count += sum([len(i) in [2,4,3,7] for i in right])
-
-    print(count)
+    print(f"Part 1: {part_1(patterns)}")
 
 
 if __name__ == "__main__":
